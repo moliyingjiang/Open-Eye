@@ -34,7 +34,7 @@ def init():
     sys.path.append(FILE.parents[0].as_posix())  # add yolov5/ to path
     device = torch.device('cuda:0')
     half = device.type != 'cpu'  # half precision only supported on CUDA
-    model = attempt_load('~/models-open-eye/eye.pt', map_location=device)  # load FP32 model
+    model = attempt_load('/home/lx/models-open-eye/eye.pt', map_location=device)  # load FP32 model
     imgsz = check_img_size(640, s=model.stride.max())  # check img_size
     if half:
         model.half()  # to FP16
@@ -71,13 +71,14 @@ def predict_img(imgs, device, half, model):
 #     # print result
 #     return result
 def main(opt):
-    cap = cv2.VideoCapture(0)
-    assert cap.isOpened(), f'Failed to open {0}'
+    # cap = cv2.VideoCapture(0)
+    # assert cap.isOpened(), f'Failed to open {0}'
     try:
         while True:
-            ret, frame = cap.read()
-            if not ret:
-                break
+            # ret, frame = cap.read()
+            # if not ret:
+                # break
+            frame = cv2.imread("1.jpg")
             img, pred = predict_img([frame], device, half, model)
             other_results = []
             yolo_results = []
