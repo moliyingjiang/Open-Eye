@@ -29,7 +29,7 @@ import cv2
 import numpy as np
 
 
-def init():
+def init_eyes():
     FILE = Path(__file__).absolute()
     sys.path.append(FILE.parents[0].as_posix())  # add yolov5/ to path
     device = torch.device('cuda:0')
@@ -70,110 +70,111 @@ def predict_img(imgs, device, half, model):
 #
 #     # print result
 #     return result
-def main(opt):
+def eye_centernet_detect(frame,device, half, model, names, colors,opt):
+    # device, half, model, names, colors = init_eyes()
+    # opt = opts().init()
+    # opt.task = 'multi_pose'
+    # os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+    # opt.debug = max(opt.debug, 1)
+    # opt.task = 'multi_pose'
+    Detector = detector_factory[opt.task]
+    detector = Detector(opt)
+    # detector.pause = False
     # cap = cv2.VideoCapture(0)
     # assert cap.isOpened(), f'Failed to open {0}'
     try:
-        while True:
-            # ret, frame = cap.read()
-            # if not ret:
-                # break
-            frame = cv2.imread("1.jpg")
-            img, pred = predict_img([frame], device, half, model)
-            other_results = []
-            yolo_results = []
+        # while True:
+        # ret, frame = cap.read()
+        # if not ret:
+            # break
+        # frame = cv2.imread(frame)
+        img, pred = predict_img([frame], device, half, model)
+        other_results = []
+        yolo_results = []
 
-            for i, det in enumerate(pred):  # detections per image
-                if len(det):
+        for i, det in enumerate(pred):  # detections per image
+            if len(det):
 
-                    # Rescale boxes from img_size to im0 size
-                    det[:, :4] = scale_coords(img.shape[2:], det[:, :4],
-                                              frame.shape).round()  # use frame.shape instead of im0.shape
-                    for *xyxy, conf, cls in reversed(det):
-                        # other_results.append(names[int(cls)])
-                        # label = f'{names[int(cls)]} {conf:.2f}'
-                        label = f'{names[int(cls)]}'
-                        # zzz = True
-                        if conf >= 0.6 and names[int(cls)] == 'eye':
-                            x1, y1, x2, y2 = [int(xy) for xy in xyxy]
-                            sign_roi = frame[y1:y2, x1:x2]
-                            # alpha = 1.6
-                            # beta = 40
-                            # new_image = cv2.convertScaleAbs(sign_roi, alpha=alpha, beta=beta)
-                            direction = detector.run(sign_roi)
-                            # other_results.append(direction)
+                # Rescale boxes from img_size to im0 size
+                det[:, :4] = scale_coords(img.shape[2:], det[:, :4],
+                                            frame.shape).round()  # use frame.shape instead of im0.shape
+                for *xyxy, conf, cls in reversed(det):
+                    # other_results.append(names[int(cls)])
+                    # label = f'{names[int(cls)]} {conf:.2f}'
+                    label = f'{names[int(cls)]}'
+                    # zzz = True
+                    if conf >= 0.6 and names[int(cls)] == 'eye_no_occlusion' or names[int(cls)] == 'eye_occlusion':
+                        x1, y1, x2, y2 = [int(xy) for xy in xyxy]
+                        label = 'eye'
+                        # plot_one_box(xyxy, frame, label=label, color=colors[int(cls)],
+                        #                 line_thickness=3)  # draw boxes on frame
+                        sign_roi = frame[y1:y2, x1:x2]
+                        # alpha = 1.6
+                        # beta = 40
+                        # new_image = cv2.convertScaleAbs(sign_roi, alpha=alpha, beta=beta)
+                        direction = detector.run(sign_roi)
+                        # other_results.append(direction)
 
-                            if 'higher' in direction:
-                                cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)),
-                                              (0, 0, 255), 3)
-                                cv2.putText(frame, direction, (int(x1), int(y1 - 10)), cv2.FONT_HERSHEY_SIMPLEX,
-                                            1.0, (0, 0, 255), 3)
-                                cv2.putText(frame, 'Higher!', (10, 50),
-                                            cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 2)
-                            if 'lower' in direction:
-                                cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)),
-                                              (0, 255, 255), 3)
-                                cv2.putText(frame, direction, (int(x1), int(y1 - 10)), cv2.FONT_HERSHEY_SIMPLEX,
-                                            1.0, (0, 255, 255), 3)
-                                cv2.putText(frame, 'low!', (10, 50),
-                                            cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 255), 2)
-                            if 'normal' in direction:
-                                cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)),
-                                              (0, 255, 0), 3)
-                                cv2.putText(frame, direction, (int(x1), int(y1 - 10)), cv2.FONT_HERSHEY_SIMPLEX,
-                                            1.0, (0, 255, 0), 3)
-                                cv2.putText(frame, 'Normal!', (10, 50),
-                                            cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
-
-
-                        elif conf >= 0.8:
-                            yolo_results.append(label)
-                            plot_one_box(xyxy, frame, label=label, color=colors[int(cls)],
-                                         line_thickness=3)  # draw boxes on frame
-
-                        total_results = other_results + yolo_results
-                        known_labels_en = ["forward", "back", "circle", "mask"]
-                        known_labels_cn = ["向前", "后退", "原地扭身", "口罩"]
-
-                        # 创建英文标签与中文标签的映射字典
-                        label_mapping = dict(zip(known_labels_en, known_labels_cn))
-                        labels_new = []
-                        # 遍历随机列表
-                        for item in total_results:
-                            if item in known_labels_en:
-                                # 获取对应的中文标签
-                                chinese_label = label_mapping[item]
-                                labels_new.append(chinese_label)
-                                # print(labels_new)
-                        if len(total_results) !=0:
-                            if '向前' in labels_new:
-                                print('识别到手势为 前进')
-                            if '后退' in labels_new:
-                                print('识别到手势为 后退')
-                            if '原地扭身' in labels_new:
-                                print('识别到手势为 原地扭身')
+                        if 'higher' in direction:
+                            cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)),
+                                            (0, 0, 255), 3)
+                            cv2.putText(frame, direction, (int(x1), int(y1 - 10)), cv2.FONT_HERSHEY_SIMPLEX,
+                                        1.0, (0, 0, 255), 3)
+                            cv2.putText(frame, 'Higher!', (10, 50),
+                                        cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 2)
+                        if 'lower' in direction:
+                            cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)),
+                                            (0, 255, 255), 3)
+                            cv2.putText(frame, direction, (int(x1), int(y1 - 10)), cv2.FONT_HERSHEY_SIMPLEX,
+                                        1.0, (0, 255, 255), 3)
+                            cv2.putText(frame, 'low!', (10, 50),
+                                        cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 255), 2)
+                        if 'normal' in direction:
+                            cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)),
+                                            (0, 255, 0), 3)
+                            cv2.putText(frame, direction, (int(x1), int(y1 - 10)), cv2.FONT_HERSHEY_SIMPLEX,
+                                        1.0, (0, 255, 0), 3)
+                            cv2.putText(frame, 'Normal!', (10, 50),
+                                        cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
 
 
-                        # ********
+                    elif conf >= 0.8:
+                        yolo_results.append(label)
+                        plot_one_box(xyxy, frame, label=label, color=colors[int(cls)],
+                                        line_thickness=3)  # draw boxes on frame
 
-            # Display the frame with bounding boxes and labels
-            cv2.imshow('Object Detection', frame)
-            if cv2.waitKey(1) == ord('q'):  # q to quit
-                break
+                    total_results = other_results + yolo_results
+                    known_labels_en = ["forward", "back", "circle", "mask"]
+                    known_labels_cn = ["向前", "后退", "原地扭身", "口罩"]
+
+                    # 创建英文标签与中文标签的映射字典
+                    label_mapping = dict(zip(known_labels_en, known_labels_cn))
+                    labels_new = []
+                    # 遍历随机列表
+                    for item in total_results:
+                        if item in known_labels_en:
+                            # 获取对应的中文标签
+                            chinese_label = label_mapping[item]
+                            labels_new.append(chinese_label)
+                            # print(labels_new)
+                    if len(total_results) !=0:
+                        if '向前' in labels_new:
+                            print('识别到手势为 前进')
+                        if '后退' in labels_new:
+                            print('识别到手势为 后退')
+                        if '原地扭身' in labels_new:
+                            print('识别到手势为 原地扭身')
+
+
+                    # ********
+
+        # Display the frame with bounding boxes and labels
+        cv2.imshow('Object Detection2', frame)
+        # if cv2.waitKey(1) == ord('q'):  # q to quit
+        #     break
     finally:
-        cap.release()
-        cv2.destroyAllWindows()
+        # cap.release()
+        # cv2.destroyAllWindows()
+        pass
 
 
-if __name__ == '__main__':
-    device, half, model, names, colors = init()
-    opt = opts().init()
-    opt.task = 'multi_pose'
-    os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-    opt.debug = max(opt.debug, 1)
-    opt.task = 'multi_pose'
-    Detector = detector_factory[opt.task]
-    detector = Detector(opt)
-    detector.pause = False
-    main(opt)
-    # import src.lib.opts
