@@ -93,7 +93,7 @@ def main(opt):
                         # zzz = True
                         if conf >= 0.6 and names[int(cls)] == 'no_occlusion' or names[int(cls)] == 'occlusion':
                             x1, y1, x2, y2 = [int(xy) for xy in xyxy]
-                            label = 'eye'
+                            label = 'faces'
                             plot_one_box(xyxy, frame, label=label, color=colors[int(cls)],
                                          line_thickness=3)  # draw boxes on frame
                             sign_roi = frame[y1:y2, x1:x2]
