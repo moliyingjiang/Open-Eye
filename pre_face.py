@@ -97,6 +97,8 @@ def main(opt):
                             plot_one_box(xyxy, frame, label=label, color=colors[int(cls)],
                                          line_thickness=3)  # draw boxes on frame
                             sign_roi = frame[y1:y2, x1:x2]
+                            cv2.imshow('ALL Detection', frame)
+                            cv2.imshow('Face Detection', sign_roi)
                             # alpha = 1.6
                             # beta = 40
                             # new_image = cv2.convertScaleAbs(sign_roi, alpha=alpha, beta=beta)

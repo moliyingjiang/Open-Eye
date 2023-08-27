@@ -11,7 +11,7 @@ from utils.general import check_img_size, non_max_suppression, scale_coords
 from utils.plots import plot_one_box
 from models.experimental import attempt_load
 
-from src.lib.opts import opts
+# from src.lib.opts import opts
 from src.lib.detectors.detector_factory import detector_factory
 
 import os
@@ -65,11 +65,6 @@ def predict_img(imgs, device, half, model):
     return img, pred
 
 
-# def demo(opt, img):
-#     # Run detector on the current frame
-#
-#     # print result
-#     return result
 def eye_centernet_detect(frame,device, half, model, names, colors,opt):
     # device, half, model, names, colors = init_eyes()
     # opt = opts().init()
@@ -106,9 +101,15 @@ def eye_centernet_detect(frame,device, half, model, names, colors,opt):
                     if conf >= 0.6 and names[int(cls)] == 'eye_no_occlusion' or names[int(cls)] == 'eye_occlusion':
                         x1, y1, x2, y2 = [int(xy) for xy in xyxy]
                         label = 'eye'
+                        cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)),
+                                            (0, 0, 255), 3)
+                        cv2.putText(frame, label, (int(x1), int(y1 - 10)), cv2.FONT_HERSHEY_SIMPLEX,
+                                    1.0, (0, 0, 255), 3)
                         # plot_one_box(xyxy, frame, label=label, color=colors[int(cls)],
                         #                 line_thickness=3)  # draw boxes on frame
                         sign_roi = frame[y1:y2, x1:x2]
+                        cv2.imshow('Face Reg Detection', frame)
+                        cv2.imshow('Eye Detection', sign_roi)
                         # alpha = 1.6
                         # beta = 40
                         # new_image = cv2.convertScaleAbs(sign_roi, alpha=alpha, beta=beta)
@@ -174,7 +175,7 @@ def eye_centernet_detect(frame,device, half, model, names, colors,opt):
         #     break
     finally:
         # cap.release()
-        # cv2.destroyAllWindows()
-        pass
+        cv2.destroyAllWindows()
+        # pass
 
 
