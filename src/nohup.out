@@ -1,0 +1,28 @@
+Fix size testing.
+training chunk_sizes: [16]
+The output will be saved to  /home/kaluo/dxz/CenterNet_Catface_v2/src/lib/../../exp/multi_pose/dla_1x_v2
+heads {'hm': 1, 'wh': 2, 'hps': 18, 'reg': 2, 'hm_hp': 9, 'hp_offset': 2}
+Namespace(K=100, aggr_weight=0.0, agnostic_ex=False, arch='dla_34', aug_ddd=0.5, aug_rot=0, batch_size=16, cat_spec_wh=False, center_thresh=0.1, chunk_sizes=[16], data_dir='/home/kaluo/dxz/CenterNet_Catface_v2/src/lib/../../data', dataset='coco_hp', debug=0, debug_dir='/home/kaluo/dxz/CenterNet_Catface_v2/src/lib/../../exp/multi_pose/dla_1x_v2/debug', debugger_theme='white', demo='', dense_hp=False, dense_wh=False, dep_weight=1, dim_weight=1, down_ratio=4, eval_oracle_dep=False, eval_oracle_hm=False, eval_oracle_hmhp=False, eval_oracle_hp_offset=False, eval_oracle_kps=False, eval_oracle_offset=False, eval_oracle_wh=False, exp_dir='/home/kaluo/dxz/CenterNet_Catface_v2/src/lib/../../exp/multi_pose', exp_id='dla_1x_v2', fix_res=True, flip=0.5, flip_idx=[[0, 1], [3, 8], [4, 7], [5, 6]], flip_test=False, gpus=[0], gpus_str='0', head_conv=256, heads={'hm': 1, 'wh': 2, 'hps': 18, 'reg': 2, 'hm_hp': 9, 'hp_offset': 2}, hide_data_time=False, hm_hp=True, hm_hp_weight=1, hm_weight=1, hp_weight=1, input_h=512, input_res=512, input_w=512, keep_res=False, kitti_split='3dop', load_model='/home/kaluo/dxz/CenterNet_Catface_v2/src/lib/../../exp/multi_pose/dla_1x_v2/model_last.pth', lr=0.0005, lr_step=[17, 27], master_batch_size=16, mean=array([[[0.40789655, 0.44719303, 0.47026116]]], dtype=float32), metric='loss', mse_loss=False, nms=False, no_color_aug=False, norm_wh=False, not_cuda_benchmark=False, not_hm_hp=False, not_prefetch_test=False, not_rand_crop=False, not_reg_bbox=False, not_reg_hp_offset=False, not_reg_offset=False, num_classes=1, num_epochs=37, num_iters=-1, num_stacks=1, num_workers=4, off_weight=1, output_h=128, output_res=128, output_w=128, pad=31, peak_thresh=0.2, print_iter=0, rect_mask=False, reg_bbox=True, reg_hp_offset=True, reg_loss='l1', reg_offset=True, resume=True, root_dir='/home/kaluo/dxz/CenterNet_Catface_v2/src/lib/../..', rot_weight=1, rotate=0, save_all=False, save_dir='/home/kaluo/dxz/CenterNet_Catface_v2/src/lib/../../exp/multi_pose/dla_1x_v2', scale=0.4, scores_thresh=0.1, seed=317, shift=0.1, std=array([[[0.2886383 , 0.27408165, 0.27809834]]], dtype=float32), task='multi_pose', test=False, test_scales=[1.0], trainval=False, val_intervals=5, vis_thresh=0.3, wh_weight=0.1)
+Creating model...
+loaded /home/kaluo/dxz/CenterNet_Catface_v2/src/lib/../../exp/multi_pose/dla_1x_v2/model_last.pth, epoch 4
+Resumed optimizer with start lr 0.0005
+Setting up data...
+==> initializing catface val data.
+loading annotations into memory...
+Done (t=0.06s)
+creating index...
+index created!
+Loaded val 1571 samples
+==> initializing catface train data.
+loading annotations into memory...
+Done (t=0.08s)
+creating index...
+index created!
+Loaded train 8897 samples
+Starting training...
+/home/kaluo/.local/lib/python3.6/site-packages/numba/errors.py:137: UserWarning: Insufficiently recent colorama version found. Numba requires colorama >= 0.3.9
+  warnings.warn(msg)
+/usr/local/lib/python3.6/dist-packages/torch/nn/_reduction.py:43: UserWarning: size_average and reduce args will be deprecated, please use reduction='sum' instead.
+  warnings.warn(warning.format(ret))
+Drop LR to 5e-05
+Drop LR to 5.000000000000001e-06
