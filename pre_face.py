@@ -62,11 +62,6 @@ def predict_img(imgs, device, half, model):
     return img, pred
 
 
-# def demo(opt, img):
-#     # Run detector on the current frame
-#
-#     # print result
-#     return result
 def main(opt):
     # cap = cv2.VideoCapture(0)
     # assert cap.isOpened(), f'Failed to open {0}'
