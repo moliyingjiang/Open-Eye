@@ -28,7 +28,7 @@ class opts(object):
                                       'or "webcam"')
         # self.parser.add_argument('--load_model', default='D:/x-ray-centernet/src/eee.pth',
         #                          help='path to pretrained model')
-        self.parser.add_argument('--load_model', default='/home/lx/x-eye-centernet/src/eee.pth',
+        self.parser.add_argument('--load_model', default='/home/lx/models-open-eye/eee.pth',
                                  help='path to pretrained model')
         self.parser.add_argument('--resume', action='store_true',
                                  help='resume an experiment. '

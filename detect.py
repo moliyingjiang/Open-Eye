@@ -34,7 +34,7 @@ def init():
     sys.path.append(FILE.parents[0].as_posix())  # add yolov5/ to path
     device = torch.device('cuda:0')
     half = device.type != 'cpu'  # half precision only supported on CUDA
-    model = attempt_load('bisai.pt', map_location=device)  # load FP32 model
+    model = attempt_load('~/models-open-eye/eye.pt', map_location=device)  # load FP32 model
     imgsz = check_img_size(640, s=model.stride.max())  # check img_size
     if half:
         model.half()  # to FP16
